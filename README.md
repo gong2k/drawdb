@@ -1,3 +1,5 @@
+<div align="right">[中文简介（简体中文）](./README.zh-CN.md)</div>
+
 <div align="center">
     <img width="64" alt="drawDB logo" src="./src/assets/icon-dark.png">
     <h1>drawDB</h1>
