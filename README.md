@@ -1,4 +1,6 @@
-<div align="right"><a href="./README.zh-CN.md">中文简介（简体中文）</a></div>
+<div align="right">
+  <a href="./README.zh-CN.md">中文简介（简体中文）</a> · <a href="https://github.com/gong2k/docs">中文文档（docs-zh-CN）</a>
+</div>
 
 <div align="center">
     <img width="64" alt="drawDB logo" src="./src/assets/icon-dark.png">
@@ -63,4 +65,5 @@ docker run -p 3000:80 -e VITE_BACKEND_URL=https://your-drawdb-server.example.com
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
 
 ## Support
+
 - Join discussions: [Discord](https://discord.gg/BrjZgNrmR6)
