@@ -88,6 +88,7 @@ import Sidesheet from "./SideSheet/Sidesheet";
 import Modal from "./Modal/Modal";
 import { useTranslation } from "react-i18next";
 import { exportSQL } from "../../utils/exportSQL";
+import { exportDiagramToXlsx } from "../../utils/xlsx";
 import { databases } from "../../data/databases";
 import { jsonToMermaid } from "../../utils/exportAs/mermaid";
 import { isRtl } from "../../i18n/utils/rtl";
@@ -1581,6 +1582,27 @@ export default function ControlPanel({
                 data: result,
                 extension: "json",
               }));
+            },
+          },
+          {
+            name: "XLSX",
+            function: () => {
+              try {
+                exportDiagramToXlsx({
+                  title,
+                  tables,
+                  relationships,
+                  notes,
+                  subjectAreas: areas,
+                  views,
+                  database,
+                  types,
+                  enums,
+                  sqlHeader,
+                });
+              } catch (e) {
+                Toast.error("XLSX 导出失败: " + (e?.message ?? e));
+              }
             },
           },
           {

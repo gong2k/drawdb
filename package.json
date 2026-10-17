@@ -44,7 +44,8 @@
     "react-router-dom": "^7.18.2",
     "react-tweet": "^3.3.1",
     "usehooks-ts": "^3.1.0",
-    "uuid": "^14.0.1"
+    "uuid": "^14.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.14",

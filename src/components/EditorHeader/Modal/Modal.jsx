@@ -27,6 +27,7 @@ import {
 import { isRtl } from "../../../i18n/utils/rtl";
 import { useExtensions } from "../../../context/ExtensionsContext";
 import { importSQL } from "../../../utils/importSQL";
+import { importXlsxToTables } from "../../../utils/xlsx";
 import {
   allowedTypesFor,
   normalizeAiDiagram,
@@ -119,8 +120,49 @@ export default function Modal({
     setSqlHeader(importData.sqlHeader ?? "");
   };
 
-  const parseSQLAndLoadDiagram = () => {
-    const targetDatabase = database === DB.GENERIC ? importDb : database;
+  const parseXlsxAndLoadDiagram = () => {
+    if (!importSource.xlsxB64) {
+      setError({ type: STATUS.ERROR, message: t("no_diagrams_match_filters") + " — xlsxB64 empty" });
+      return;
+    }
+    try {
+      // 把 base64 转回 ArrayBuffer
+      const bin = atob(importSource.xlsxB64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const ab = bytes.buffer;
+
+      const { tables, errors } = importXlsxToTables(ab);
+      if (!tables || tables.length === 0) {
+        setError({
+          type: STATUS.ERROR,
+          message: t("didnt_find_diagram") + " — xlsx 无有效表",
+        });
+        return;
+      }
+
+      // 构造一个与 SQL 导入路径一致的最小 diagram data
+      const diagramData = {
+        tables,
+        relationships: [],
+        types: [],
+        enums: [],
+        notes: [],
+        views: [],
+        subjectAreas: [],
+      };
+
+      applyImportedDiagram(diagramData);
+
+      if (errors && errors.length > 0) {
+        setError({ type: STATUS.WARNING, message: errors.join("; ") });
+      }
+    } catch (e) {
+      setError({ type: STATUS.ERROR, message: e.message || String(e) });
+    }
+  };
+
+const parseSQLAndLoadDiagram = () => {    const targetDatabase = database === DB.GENERIC ? importDb : database;
 
     let ast = null;
     try {
@@ -256,7 +298,11 @@ export default function Modal({
         }
         return;
       case MODAL.IMPORT_SRC:
-        parseSQLAndLoadDiagram();
+        if (importSource.srcType === "xlsx") {
+          parseXlsxAndLoadDiagram();
+        } else {
+          parseSQLAndLoadDiagram();
+        }
         return;
       case MODAL.OPEN:
         if (!selectedDiagramId) return;
